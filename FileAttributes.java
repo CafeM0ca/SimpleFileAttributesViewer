@@ -14,7 +14,7 @@ interface OSdetect{
 	public String getOperatingSystemName();
 }
 
-abstract class OSinfo implements OSdetect{
+abstract class OSinfo{
 	
 	public abstract void inputFilePath();
 }
@@ -23,20 +23,28 @@ public class FileAttributes extends OSinfo implements OSdetect {
 	public Path path; 
 	public String getOperatingSystemName() { 
 		String osName = System.getProperty("os.name").toLowerCase(Locale.ROOT); 
-		if(osName.startsWith("windows")) 
+		if(osName.startsWith("windows")) {
+			System.out.println("current OS is windows");
 			return "windows"; 
-		else if(osName.startsWith("linux")) 
+		}
+		else if(osName.startsWith("linux")) {
+			System.out.println("current OS is linux");
 			return "linux"; 
-		else if(osName.startsWith("mac os")) 
+		}
+		else if(osName.startsWith("mac os")) {
+			System.out.println("current OS is mac");
 			return "mac"; 
-		else 
+		}
+		else {
+			System.out.println("current OS is "+System.getProperty("os.name").toLowerCase());
 			return "no apply";
+		}
 	}
 
 	FileAttributes() { 
 		switch(getOperatingSystemName()) { 
-			case "linux" : 
-				System.out.println("Apply OS: linux");
+			case "windows" : 
+				System.out.println("this programm Apply windows");
 				this.inputFilePath();
 					setCreationTime();
 					setLastAccessTime();
@@ -44,7 +52,32 @@ public class FileAttributes extends OSinfo implements OSdetect {
 					setIsDirectory();
 					setIsRegularFile();
 					setIsSymbolicLink();
-				
+					printFileAttributes();
+					break;
+			case "linux" : 
+				System.out.println("this programm Apply linux");
+				this.inputFilePath();
+					setCreationTime();
+					setLastAccessTime();
+					setLastModifiedTime();
+					setIsDirectory();
+					setIsRegularFile();
+					setIsSymbolicLink();
+					printFileAttributes();
+					break;
+			case "mac" : 
+				System.out.println("this programm Apply mac");
+				this.inputFilePath();
+					setCreationTime();
+					setLastAccessTime();
+					setLastModifiedTime();
+					setIsDirectory();
+					setIsRegularFile();
+					setIsSymbolicLink();
+					printFileAttributes();
+					break;
+			default:
+					System.out.println("sorry");
 		} 
 	} 
 	public void inputFilePath() { 
@@ -122,7 +155,7 @@ public class FileAttributes extends OSinfo implements OSdetect {
 	public final boolean getIsRegularFile() { return isRegularFile; }
 	public final boolean getIsSymbolicLink() { return  isSymbolicLink; }
 	
-	public final void printFileAttributes() {
+	private final void printFileAttributes() {
 			System.out.println("[***FileInfo***]");
 			System.out.printf("size(byte)               : %d \n", getFsize());
 			System.out.printf("created                  : %s \n", getCreationTime());
@@ -134,7 +167,6 @@ public class FileAttributes extends OSinfo implements OSdetect {
 	}
 	public static void main(String[] args){
 			FileAttributes fatb = new FileAttributes();
-			fatb.printFileAttributes();	
 	}	
 }
 
