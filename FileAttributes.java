@@ -10,16 +10,50 @@ import java.util.Scanner;
 
 
 
-	interface OSdetect{
-		public String getOperatingSystemName();
+interface OSdetect{
+	public String getOperatingSystemName();
+}
+
+abstract class OSinfo implements OSdetect{
+	
+	public abstract void inputFilePath();
+}
+
+public class FileAttributes extends OSinfo implements OSdetect {
+	public Path path; 
+	public String getOperatingSystemName() { 
+		String osName = System.getProperty("os.name").toLowerCase(Locale.ROOT); 
+		if(osName.startsWith("windows")) 
+			return "windows"; 
+		else if(osName.startsWith("linux")) 
+			return "linux"; 
+		else if(osName.startsWith("mac os")) 
+			return "mac"; 
+		else 
+			return "no apply";
 	}
 
-	abstract class OSinfo implements OSdetect{
-		
-		public abstract void inputFilePath();
-	}
-public class FileAttributes extends OSinfo implements OSdetect {
-	Path path; private String getOperatingSystemName() { String osName = System.getProperty("os.name").toLowerCase(Locale.ROOT); if(osName.startsWith("windows")) return "windows"; else if(osName.startsWith("linux")) return "linux"; else if(osName.startsWith("mac os")) return "mac"; } FileAttributes() { switch(getOperatingSystemName()) { case "linux" : } } public void inputFilePath() { Scanner scan = new Scanner(System.in);	System.out.printf("Input File Path: "); String filepath = scan.nextLine(); path = Paths.get(filepath);
+	FileAttributes() { 
+		switch(getOperatingSystemName()) { 
+			case "linux" : 
+				System.out.println("Apply OS: linux");
+				this.inputFilePath();
+					setCreationTime();
+					setLastAccessTime();
+					setLastModifiedTime();
+					setIsDirectory();
+					setIsRegularFile();
+					setIsSymbolicLink();
+				
+		} 
+	} 
+	public void inputFilePath() { 
+		Scanner scan = new Scanner(System.in);	
+		System.out.printf("Input File location: "); 
+		String filepath = scan.nextLine(); 
+		System.out.printf("Input File Name: "); 
+		String filename = scan.nextLine();
+		path = Paths.get(filepath,filename);
 	}
 	private long fsize;
 	private FileTime creationTime;
@@ -30,23 +64,53 @@ public class FileAttributes extends OSinfo implements OSdetect {
 	private boolean isSymbolicLink;
 
 	public void setCreationTime() {
-		fsize = (Long) Files.getAttribute(path, "basic:size", NOFOLLOW_LINKS);
+		try{
+			fsize = (Long) Files.getAttribute(path, "basic:size", NOFOLLOW_LINKS);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 	public void setLastAccessTime() {
-		creationTime = (FileTime)Files.getAttribute(path, "basic:creationTime", NOFOLLOW_LINKS);
+		try{
+			creationTime = (FileTime)Files.getAttribute(path, "basic:creationTime", NOFOLLOW_LINKS);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}	
 	}
 	public void setLastModifiedTime() {
-		lastModifiedTime = (FileTime) Files.getAttribute(path, "basic:lastModifiedTime", NOFOLLOW_LINKS);
+		try{
+			lastModifiedTime = (FileTime) Files.getAttribute(path, "basic:lastModifiedTime", NOFOLLOW_LINKS);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+
 	}
 	public void setIsDirectory() {
-
-		isDirectory = (Boolean) Files.getAttribute(path, "basic:isDirectory", NOFOLLOW_LINKS);
+		try{
+			isDirectory = (Boolean) Files.getAttribute(path, "basic:isDirectory", NOFOLLOW_LINKS);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 	public void setIsRegularFile() {
-		isRegularFile = (Boolean) Files.getAttribute(path, "basic:isRegularFile", NOFOLLOW_LINKS);
+		try{
+			isRegularFile = (Boolean) Files.getAttribute(path, "basic:isRegularFile", NOFOLLOW_LINKS);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 	public void setIsSymbolicLink() {
-		isSymbolicLink = (Boolean) Files.getAttribute(path, "basic:isSymbolicLink", NOFOLLOW_LINKS);
+		try{
+			isSymbolicLink = (Boolean) Files.getAttribute(path, "basic:isSymbolicLink", NOFOLLOW_LINKS);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 
 
@@ -60,29 +124,17 @@ public class FileAttributes extends OSinfo implements OSdetect {
 	
 	public final void printFileAttributes() {
 			System.out.println("[***FileInfo***]");
-			System.out.printf("size(byte)           : %d \n", getFsize());
-			System.out.printf("created				: %s \n", getCreationTime());
-			System.out.printf("LastAccess		    : %s \n", getLastAccessTime());
-			System.out.printf("LastModified	        : %s \n", getLastModifiedTime());
-			System.out.printf("Directory?			: %s \n", getIsDirectory());
-			System.out.printf("File?				: %s \n", getIsRegularFile());
-			System.out.printf("symboliclink?		: %s \n", getIsSymbolicLink());
+			System.out.printf("size(byte)               : %d \n", getFsize());
+			System.out.printf("created                  : %s \n", getCreationTime());
+			System.out.printf("LastAccess               : %s \n", getLastAccessTime());
+			System.out.printf("LastModified             : %s \n", getLastModifiedTime());
+			System.out.printf("Directory?               : %s \n", getIsDirectory());
+			System.out.printf("File?                    : %s \n", getIsRegularFile());
+			System.out.printf("symboliclink?            : %s \n", getIsSymbolicLink());
 	}
-	
-}
-
-public class F{
-	public static void main(String[] args) {
-
-
-		try {
-			FileAttributes fatb;
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-
-	}
+	public static void main(String[] args){
+			FileAttributes fatb = new FileAttributes();
+			fatb.printFileAttributes();	
+	}	
 }
 
